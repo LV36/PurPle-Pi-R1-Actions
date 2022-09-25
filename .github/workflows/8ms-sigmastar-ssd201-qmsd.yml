@@ -34,9 +34,6 @@ jobs:
         sudo chmod 777 /etc/profile
         sudo echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> /etc/profile
         source /etc/profile
-        sudo chmod 777 /root/.bashrc
-        sudo echo -e '\nexport /root/.bashrc\n' >> /root/.bashrc
-        source /root/.bashrc
         sudo arm-linux-gnueabihf-gcc --version
         sudo git clone https://github.com/wireless-tag-com/8ms-sigmastar.git
     - name: Build Firmware
