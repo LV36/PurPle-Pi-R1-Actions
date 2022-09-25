@@ -34,7 +34,7 @@ jobs:
         sudo chmod 777 ~/.profile
         echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
         source ~/.profile
-        which arm-linux-gnueabihf-gcc
+        arm-linux-gnueabihf-gcc --version
     - name: Build Firmware
       run: |
         cd /opt/8ms-sigmastar
