@@ -1,4 +1,4 @@
-*name: uboot-ssd20x 云编译
+name: uboot-ssd20x 云编译
 
 on: 
   repository_dispatch:
