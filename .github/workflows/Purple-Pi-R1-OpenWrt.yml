@@ -1,0 +1,57 @@
+name: Purple-Pi-R1-OpenWrt 云编译
+
+on: 
+  repository_dispatch:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'   
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update && sudo apt-get full-upgrade -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
+        sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc libxml-parser-perl gengetopt default-jre-headless ocaml-nox sharutils texinfo
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386
+    - name: Clone source code
+      run: |
+        cd /opt
+        sudo git clone https://github.com/LV36/openwrt-ssd20x.git
+        sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        sudo chmod 777 ~/.profile
+        echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
+        source ~/.profile
+    - name: Build Firmware
+      run: |
+        cd /opt/openwrt-ssd20x/18.06
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a -f
+        make WT2015_wt
+        make V=s -j4
+        sudo tar -czvf /opt/Purple-Pi-R1-OpenWrt.tar.gz /opt/openwrt-ssd20x/18.06/bin/targets/sstar/ssd20x/WT2015/*
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: Purple-Pi-R1-OpenWrt 
+        path: /opt/openwrt-ssd20x/18.06/bin/targets/sstar/ssd20x/WT2015
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "Purple-Pi-R1-OpenWrt"
+        files: /opt/Purple-Pi-R1-OpenWrt.tar.gz
