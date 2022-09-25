@@ -22,6 +22,7 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get full-upgrade -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
         sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc libxml-parser-perl gengetopt default-jre-headless ocaml-nox sharutils texinfo
+        sudo apt-get install gcc-arm-linux-gnueabi gcc-arm*
         sudo dpkg --add-architecture i386
         sudo apt-get update
         sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386
@@ -47,7 +48,7 @@ jobs:
       uses: actions/upload-artifact@master
       if: always()
       with:
-        name: uboot-ssd201 
+        name: uboot-ssd20x 
         path: /opt//uboot-ssd20x/u-boot_spinand.xz.img.bin
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
