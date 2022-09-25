@@ -42,7 +42,7 @@ jobs:
         sudo make ARCH="arm" CROSS_COMPILE="arm-linux-gnueabihf-" qmsd_spinand_defconfig
         sudo make clean; sudo make -j4 && sudo make
         ls /opt/uboot-ssd20x
-        sudo find ~ -name u-boot_spinand.xz.img.bin -print     
+        sudo find /opt -name u-boot_spinand.xz.img.bin -print     
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
