@@ -22,18 +22,17 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get full-upgrade -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
         sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc libxml-parser-perl gengetopt default-jre-headless ocaml-nox sharutils texinfo
-        sudo apt-get install gcc-arm-linux-gnueabi gcc-arm*
         sudo dpkg --add-architecture i386
         sudo apt-get update
         sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386
     - name: Clone source code
       run: |
-        cd /opt
-        sudo git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
-        sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
-        sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        cd ~
+        git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
+        wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
         sudo chmod 777 ~/.profile
-        echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
+        echo -e '\nexport PATH=~/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
         source ~/.profile
     - name: Build Firmware
       run: |
