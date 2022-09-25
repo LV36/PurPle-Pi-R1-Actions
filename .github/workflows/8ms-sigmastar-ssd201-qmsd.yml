@@ -1,0 +1,46 @@
+name: 8ms-sigmastar-ssd201-qmsd 云编译
+
+on: 
+  repository_dispatch:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'   
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update             
+    - name: Clone source code
+      run: |
+        cd ~
+        git clone https://github.com/wireless-tag-com/8ms-sigmastar.git
+    - name: Build Firmware
+      run: |
+        cd ~/8ms-sigmastar
+        make CHIP=ssd201
+        cd /opt
+        sudo tar -czvf 8ms-sigmastar-ssd201-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo/*
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: 8ms-sigmastar-ssd201-qmsd
+        path: ~/8ms-sigmastar/bin/qmsd-demo/
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "8ms-sigmastar-ssd201-qmsd"
+        files: /opt/8ms-sigmastar-ssd201-qmsd.tar.gz
