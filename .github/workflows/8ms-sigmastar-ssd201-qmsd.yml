@@ -1,4 +1,4 @@
-name: 8ms-sigmastar-ssd201-qmsd 云编译
+name: 8ms-sigmastar-ssd20x-qmsd 云编译
 
 on: 
   repository_dispatch:
@@ -28,19 +28,19 @@ jobs:
     - name: Build Firmware
       run: |
         cd ~/8ms-sigmastar
-        make CHIP=ssd201
+        make CHIP=ssd20x
         cd /opt
-        sudo tar -czvf 8ms-sigmastar-ssd201-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo/*
+        sudo tar -czvf 8ms-sigmastar-ssd20x-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo/*
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
       with:
-        name: 8ms-sigmastar-ssd201-qmsd
+        name: 8ms-sigmastar-ssd20x-qmsd
         path: ~/8ms-sigmastar/bin/qmsd-demo/
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "8ms-sigmastar-ssd201-qmsd"
-        files: /opt/8ms-sigmastar-ssd201-qmsd.tar.gz
+        tag_name: "8ms-sigmastar-ssd20x-qmsd"
+        files: /opt/8ms-sigmastar-ssd20x-qmsd.tar.gz
