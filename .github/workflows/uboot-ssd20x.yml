@@ -39,9 +39,7 @@ jobs:
     - name: Build Firmware
       run: |
         cd /opt/uboot-ssd20x
-        declare -x ARCH="arm"
-        declare -x CROSS_COMPILE="arm-linux-gnueabihf-"
-        sudo make qmsd_spinand_defconfig
+        sudo make ARCH="arm" CROSS_COMPILE="arm-linux-gnueabihf-" qmsd_spinand_defconfig
         sudo make clean; sudo make -j4 && sudo make
         ls /opt/uboot-ssd20x
         sudo find ~ -name u-boot_spinand.xz.img.bin -print     
