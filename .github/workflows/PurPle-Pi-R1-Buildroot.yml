@@ -1,0 +1,46 @@
+name: PurPle-Pi-R1-Buildroot 云编译
+
+on: 
+  repository_dispatch:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'   
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc-arm-linux-gnueabi gcc-arm*        
+    - name: Clone source code
+      run: |
+        cd ~
+        git clone https://github.com/industio/PurPle-Pi-R1.git
+    - name: Build Firmware
+      run: |
+        cd ~/PurPle-Pi-R1
+        ./Release_to_customer.sh -f nand -p ssd201 -m 128 -q fastboot
+        sudo tar -czvf /opt/PurPle-Pi-R1-Buildroot.tar.gz ~/PurPle-Pi-R1/project/image/output/images/*
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: PurPle-Pi-R1-Buildroot-images
+        path: ~/PurPle-Pi-R1/project/image/output/images
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "PurPle-Pi-R1-Buildroot-images"
+        files: /opt/PurPle-Pi-R1-Buildroot-images.tar.gz
