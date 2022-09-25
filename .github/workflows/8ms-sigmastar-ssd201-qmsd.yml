@@ -20,7 +20,8 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo apt-get update             
+        sudo apt-get update
+        sudo apt-get install gcc-arm-linux-gnueabi gcc-arm*
     - name: Clone source code
       run: |
         cd ~
