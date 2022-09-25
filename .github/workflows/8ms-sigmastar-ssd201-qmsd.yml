@@ -31,9 +31,6 @@ jobs:
         cd /opt
         sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
         sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
-        sudo chmod 777 /etc/profile
-        sudo echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> /etc/profile
-        source /etc/profile
         sudo arm-linux-gnueabihf-gcc --version
         sudo git clone https://github.com/wireless-tag-com/8ms-sigmastar.git
     - name: Build Firmware
