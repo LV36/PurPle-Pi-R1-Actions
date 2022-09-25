@@ -41,7 +41,8 @@ jobs:
         ./scripts/feeds install -a -f
         make WT2015_wt
         make V=s -j4
-        sudo tar -czvf /opt/Purple-Pi-R1-OpenWrt.tar.gz /opt/openwrt-ssd20x/18.06/bin/targets/sstar/ssd20x/WT2015/*
+        cd /opt
+        sudo tar -czvf Purple-Pi-R1-OpenWrt.tar.gz /opt/openwrt-ssd20x/18.06/bin/targets/sstar/ssd20x/WT2015/*
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
