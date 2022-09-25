@@ -28,16 +28,17 @@ jobs:
     - name: Clone source code
       run: |
         cd /opt
-        sudo git clone https://github.com/wireless-tag-com/8ms-sigmastar.git
         sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
         sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
         sudo chmod 777 ~/.profile
         echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
         source ~/.profile
         arm-linux-gnueabihf-gcc --version
+        cd ~
+        git clone https://github.com/wireless-tag-com/8ms-sigmastar.git
     - name: Build Firmware
       run: |
-        cd /opt/8ms-sigmastar
+        cd ~/8ms-sigmastar
         make CHIP=ssd20x
         cd /opt
         sudo tar -czvf 8ms-sigmastar-ssd20x-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo/*
@@ -46,11 +47,11 @@ jobs:
       if: always()
       with:
         name: 8ms-sigmastar-ssd20x-qmsd
-        path: /opt/8ms-sigmastar/bin/qmsd-demo/
+        path: ~/8ms-sigmastar/bin/qmsd-demo/
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: "8ms-sigmastar-ssd20x-qmsd"
-        files: /opt/8ms-sigmastar-ssd20x-qmsd.tar.gz
+        files: ~/8ms-sigmastar-ssd20x-qmsd.tar.gz
