@@ -1,4 +1,4 @@
-name: uboot-ssd201 云编译
+name: uboot-ssd20x 云编译
 
 on: 
   repository_dispatch:
@@ -54,5 +54,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "Purple-Pi-R1-OpenWrt"
+        tag_name: "uboot-ssd20x"
         files: /opt//uboot-ssd20x/u-boot_spinand.xz.img.bin
