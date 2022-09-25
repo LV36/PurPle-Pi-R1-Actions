@@ -28,31 +28,31 @@ jobs:
         sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386
     - name: Clone source code
       run: |
-        cd /opt
-        sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
-        sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
-        sudo chmod 777 /etc/profile
-        sudo echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> /etc/profile
-        source /etc/profile
-        arm-linux-gnueabihf-gcc --version
-        sudo git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
+        cd ~
+        git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
+        wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        sudo chmod 777 ~/.profile
+        echo -e '\nexport PATH=~/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
+        source ~/.profile
+        arm-linux-gnueabihf-gcc --version       
     - name: Build Firmware
       run: |
-        cd /opt/uboot-ssd20x
+        cd ~/uboot-ssd20x
         make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- qmsd_spinand_defconfig
         make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- clean; make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 && make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
-        ls /opt/uboot-ssd20x
-        sudo find /opt -name u-boot_spinand.xz.img.bin -print     
+        ls ~/uboot-ssd20x
+        find ~ -name u-boot_spinand.xz.img.bin -print     
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
       with:
         name: uboot-ssd20x 
-        path: /opt/uboot-ssd20x/u-boot_spinand.xz.img.bin
+        path: ~/uboot-ssd20x/u-boot_spinand.xz.img.bin
     - name: Upload firmware to release
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: "uboot-ssd20x"
-        files: /opt/uboot-ssd20x/u-boot_spinand.xz.img.bin
+        files: ~/uboot-ssd20x/u-boot_spinand.xz.img.bin
