@@ -1,0 +1,58 @@
+name: uboot-ssd201 云编译
+
+on: 
+  repository_dispatch:
+  workflow_dispatch:
+  release:
+    types: [published]
+  push:
+    tags:
+    - 'v*'   
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Initialization environment
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        sudo apt-get update && sudo apt-get full-upgrade -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
+        sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc libxml-parser-perl gengetopt default-jre-headless ocaml-nox sharutils texinfo
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386
+    - name: Clone source code
+      run: |
+        cd /opt
+        sudo git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
+        sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        sudo chmod 777 ~/.profile
+        echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
+        source ~/.profile
+    - name: Build Firmware
+      run: |
+        cd /opt/uboot-ssd20x
+        declare -x ARCH="arm"
+        declare -x CROSS_COMPILE="arm-linux-gnueabihf-"
+        make qmsd_spinand_defconfig
+        make clean; make -j4 && make
+        ls /opt/uboot-ssd20x
+        find /opt -name u-boot_spinand.xz.img.bin -print     
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      if: always()
+      with:
+        name: uboot-ssd201 
+        path: /opt//uboot-ssd20x/u-boot_spinand.xz.img.bin
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: "Purple-Pi-R1-OpenWrt"
+        files: /opt//uboot-ssd20x/u-boot_spinand.xz.img.bin
