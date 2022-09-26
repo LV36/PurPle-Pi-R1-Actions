@@ -53,7 +53,10 @@ jobs:
       run: |
         cd ~/8ms-sigmastar
         make CHIP=ssd20x
-        tar -czvf 8ms-sigmastar-ssd20x-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo/*
+        ls
+        cd ~/8ms-sigmastar/bin
+        ls
+        tar -czvf 8ms-sigmastar-ssd20x-qmsd.tar.gz ~/8ms-sigmastar/bin/qmsd-demo
     - name : Upload packages
       uses: actions/upload-artifact@master
       if: always()
