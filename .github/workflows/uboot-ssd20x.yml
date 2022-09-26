@@ -10,7 +10,7 @@ on:
     - 'v*'   
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     steps:
@@ -22,9 +22,6 @@ jobs:
       run: |
         sudo apt-get update && sudo apt-get full-upgrade -y && sudo apt-get upgrade -y && sudo apt-get autoremove -y
         sudo apt-get install subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc libxml-parser-perl gengetopt default-jre-headless ocaml-nox sharutils texinfo git gcc g++ make
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386        
         sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils bison build-essential \
            bzip2 ccache cmake cpio curl device-tree-compiler fastjar flex gawk gettext gcc-multilib g++-multilib \
            git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev libgmp3-dev libltdl-dev \
@@ -37,17 +34,19 @@ jobs:
            python-distutils-extra python3-setuptools python3-dev rsync subversion \
            swig time xsltproc zlib1g-dev
         sudo apt-get install lib32ncurses5-dev lib32z1-dev
-        #sudo apt-get install gcc-arm-linux-gnueabi
         sudo apt-get install gcc-arm*
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install zlib1g:i386 libstdc++6:i386 libc6:i386 libc6-dev-i386        
     - name: Clone source code
       run: |
         cd ~
         git clone https://github.com/wireless-tag-com/uboot-ssd20x.git
         cd /opt
-        sudo wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
-        sudo tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        wget https://github.com/LV36/openwrt-ssd20x-toolchian/releases/download/2018.08/wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
+        tar -xvf wt-gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tag.gz
         sudo chmod 777 ~/.profile
-        sudo echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
+        echo -e '\nexport PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH\n' >> ~/.profile
         source ~/.profile
         arm-linux-gnueabihf-gcc --version       
     - name: Build Firmware
