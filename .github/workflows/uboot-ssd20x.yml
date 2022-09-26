@@ -37,8 +37,8 @@ jobs:
            python-distutils-extra python3-setuptools python3-dev rsync subversion \
            swig time xsltproc zlib1g-dev
         sudo apt-get install lib32ncurses5-dev lib32z1-dev
-        sudo apt-get install gcc-arm-linux-gnueabi
-        sudo apt-get install gcc-arm*
+        #sudo apt-get install gcc-arm-linux-gnueabi
+        #sudo apt-get install gcc-arm*
     - name: Clone source code
       run: |
         cd ~
