@@ -63,10 +63,14 @@ jobs:
       with:
         name: uboot-ssd20x 
         path: ~/uboot-ssd20x/u-boot_spinand.xz.img.bin
+    - name: Find File
+      run: |
+        cd /home/runner/uboot-ssd20x/
+        cat u-boot_spinand.xz.img.bin
     - name: Upload firmware to release
       uses: softprops/action-gh-release@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: "uboot-ssd20x"
-        files: /home/runner/uboot-ssd20x/u-boot_spinand.xz.img.bin
+        files: u-boot_spinand.xz.img.bin
